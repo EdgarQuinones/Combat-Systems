@@ -1,16 +1,30 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private Vector2 moveInput;
+    private Rigidbody2D rb;
+    private float speed = 5.0f;
+    
+
+    private void Awake()
     {
-        
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnMove(InputAction.CallbackContext context)
     {
-        
+        moveInput = context.ReadValue<Vector2>();
+    }
+
+    private void FixedUpdate()
+    {
+        Debug.Log("X Input: " + moveInput.x);
+        Debug.Log("Y Input: " + moveInput.y);
+
+        rb.linearVelocity = new Vector2(
+            moveInput.x * speed,
+            moveInput.y * speed);
     }
 }
