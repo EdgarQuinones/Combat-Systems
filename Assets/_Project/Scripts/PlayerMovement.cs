@@ -1,12 +1,15 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Rigidbody2D))] // Rigibody2D is needed for movement to work
 public class PlayerMovement : MonoBehaviour
 {
     private Vector2 moveInput;
     private Rigidbody2D rb;
-    private float speed = 5.0f;
-    
+
+    [Header ("Movement Settings")]
+    // Can edit speed in inspector
+    [SerializeField] private float speed = 5.0f;
 
     private void Awake()
     {
@@ -15,16 +18,13 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        moveInput = context.ReadValue<Vector2>();
+        // Both x & y can be -1, 0, or 1
+        moveInput = context.ReadValue<Vector2>(); 
     }
 
     private void FixedUpdate()
     {
-        Debug.Log("X Input: " + moveInput.x);
-        Debug.Log("Y Input: " + moveInput.y);
-
-        rb.linearVelocity = new Vector2(
-            moveInput.x * speed,
-            moveInput.y * speed);
+        // moveInput is already normalized for diagonal movement 
+        rb.linearVelocity = moveInput * speed; 
     }
 }
