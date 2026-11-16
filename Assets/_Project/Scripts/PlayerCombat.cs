@@ -11,6 +11,9 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private float attack1Radius = 0.75f;
     [SerializeField] private float attack1Cooldown = 3.0f;
+    [SerializeField] private float attack1startUp = 0.15f;
+    [SerializeField] private float attack1AttackStart = 0.10f;
+    [SerializeField] private float attack1Recover = 0.25f;
     private float nextAttack1Time = 0.0f;
 
     public void OnAttack1(InputAction.CallbackContext context)
@@ -23,13 +26,9 @@ public class PlayerCombat : MonoBehaviour
             return;
         nextAttack1Time = Time.time + attack1Cooldown;
 
-        // Startup: 0.15 seconds
-        // Active: 0.1 seconds
-        // Recovery: 0.25 seconds
-        //
-        // hmm. 3 variables startUpTime, ActiveTime, RecoveryTime
-        // 
-
+        // invoke (startup, attack1startUp) // animation and begin slow
+        // invoke (attack, attack1startUp + attack1AttackStart) // read all colliders and damage
+        // invoke (recover, attack1startUp + attack1AttackStart + attack1Recover) // animation, still slowed, and cooldown hasnt started yet
 
         // Attempts to hit any enemies within the circle (Dont forgot ALL)
         Collider2D[] enemiesHit = Physics2D.OverlapCircleAll(
