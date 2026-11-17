@@ -11,7 +11,7 @@ public class Health : MonoBehaviour
         _currentHealth = startingHealth;
     }
 
-    public void takeDamage (int dmg = 10)
+    public void TakeDamage (int dmg = 10)
     {
         _currentHealth = Mathf.Max(0, _currentHealth - dmg);
 

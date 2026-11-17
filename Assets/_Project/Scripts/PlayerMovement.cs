@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))] // Rigibody2D is needed for movement to work
 public class PlayerMovement : MonoBehaviour
@@ -12,10 +13,12 @@ public class PlayerMovement : MonoBehaviour
     [Header ("Movement Settings")]
     // Can edit speed in inspector
     [SerializeField] private float speed = 5.0f;
+    private float currentSpeed;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        currentSpeed = speed;
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -31,6 +34,26 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         // moveInput is already normalized for diagonal movement 
-        rb.linearVelocity = moveInput * speed;
+        rb.linearVelocity = moveInput * currentSpeed;
+    }
+    
+    // Increase or decrease speed
+    public void ApplyTemporarySpeedModifier(float modifier, float duration)
+    {
+        StartCoroutine(TemporarySpeedModifier(modifier, duration)); // Handles the delay
+    }
+
+    // Should add back what was previously removed
+    private IEnumerator TemporarySpeedModifier(float modifier, float duration)
+    {
+        currentSpeed += speed * modifier; // Speed change
+        yield return new WaitForSeconds(duration); // Wait before going back to original speed
+        currentSpeed -= speed * modifier; // Reverse Speed change
+    }
+
+    // Remove all speed debuffs
+    public void ResetSpeed()
+    {
+        currentSpeed = speed;
     }
 }

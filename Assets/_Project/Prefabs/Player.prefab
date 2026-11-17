@@ -315,8 +315,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
   playerMovement: {fileID: 210740566804437903}
-  offset: 1
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
+  ability1Offset: 1
   attack1Radius: 0.75
+  attack1Cooldown: 1
+  attack1startUpTimer: 0.15
+  attack1HitTimer: 0.1
+  attack1RecoverTimer: 0.25
+  attack1SpeedChange: -0.5

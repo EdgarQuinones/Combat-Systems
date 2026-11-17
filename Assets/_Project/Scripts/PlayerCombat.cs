@@ -9,13 +9,15 @@ public class PlayerCombat : MonoBehaviour
     [Header ("Attack Settings")]
     [SerializeField] private LayerMask enemyLayer;
 
-    [Header ("Attack1")]
+    [Header ("Attack 1")]
     [SerializeField] private float ability1Offset = 1.0f;
     [SerializeField] private float attack1Radius = 0.75f;
     [SerializeField] private float attack1Cooldown = 3.0f;
     [SerializeField] private float attack1startUpTimer = 0.15f;
     [SerializeField] private float attack1HitTimer = 0.10f;
     [SerializeField] private float attack1RecoverTimer = 0.25f;
+    [SerializeField] private float attack1SpeedChange = -0.5f;
+    [SerializeField] private Vector2 attack1KnockBack = new Vector2(1,1);
     private float nextAttack1Time = 0.0f;
     private float totalAttackTime;
 
@@ -59,8 +61,10 @@ public class PlayerCombat : MonoBehaviour
         Debug.Log("Attack 1 START");
 
         // Getting last position from PlayerMovement script
+        playerMovement.ApplyTemporarySpeedModifier(attack1SpeedChange, totalAttackTime);
         attackDirection =  playerMovement.lastDirection.normalized;
     }
+
     private void Attack1Hit()
     {
         // animation
@@ -76,11 +80,13 @@ public class PlayerCombat : MonoBehaviour
 
         foreach (Collider2D enemy in enemiesHit)
         {
-            Health enemyHealth = enemy.GetComponent<Health>(); // Get enemy health component
+            Health enemyHealth = enemy.GetComponent<Health>(); // Dmg, death, etc
+            EnemyMovement enemyMovement = enemy.GetComponent<EnemyMovement>(); // Knockbacks, etc
 
-            if (enemyHealth != null)
+            if (enemyHealth != null && enemyMovement != null)
             {
-                enemyHealth.takeDamage(); // Enemy should take 10 health by default
+                enemyHealth.TakeDamage(); // Enemy should take 10 health by default
+                enemyMovement.ApplyForce(attack1KnockBack * attackDirection); // Apply knockback
 
                 Debug.Log("Player hit {" + enemy.name + "} with attack 1. Enemy now has " + enemyHealth.currentHealth + " health.");
             }
