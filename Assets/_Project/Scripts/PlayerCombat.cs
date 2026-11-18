@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -9,20 +10,21 @@ public class PlayerCombat : MonoBehaviour
     [Header ("Attack Settings")]
     [SerializeField] private LayerMask enemyLayer;
 
+    Vector2 attackDirection;
+
     [Header ("Attack 1")]
     [SerializeField] private float ability1Offset = 1.0f;
     [SerializeField] private float attack1Radius = 0.75f;
-    [SerializeField] private float attack1Cooldown = 3.0f;
+    [SerializeField] private float attack1Cooldown = 0f;
     [SerializeField] private float attack1startUpTimer = 0.15f;
     [SerializeField] private float attack1HitTimer = 0.10f;
     [SerializeField] private float attack1RecoverTimer = 0.25f;
     [SerializeField] private float attack1SpeedChange = -0.5f;
     [SerializeField] private float attack1KnockBackStrength = 2.0f;
+    private HashSet<Collider2D> enemiesAlreadyHit = new(); 
+    private bool canAttack1 = false;
     private float nextAttack1Time = 0.0f;
     private float totalAttackTime;
-
-    Vector2 attackDirection;
-    Vector2 attackPosition;
 
     private void Awake()
     {
@@ -59,58 +61,76 @@ public class PlayerCombat : MonoBehaviour
     {
         // Animation
         // Reduce movement speed 
-        Debug.Log("Attack 1 START");
+        Debug.Log("Attack 1 STARTUP");
 
         // Getting last position from PlayerMovement script
         playerMovement.ApplyTemporarySpeedModifier(attack1SpeedChange, totalAttackTime);
         attackDirection =  playerMovement.lastDirection.normalized;
-        attackPosition = CalculateAttackPosition(transform.position, attackDirection, ability1Offset);
     }
 
     private void Attack1Hit()
     {
-        // animation
-        // Hit and dmg
-        // still slow
-        Debug.Log("Attack 1 HIT");
+        canAttack1 = true;
+    }
 
-        // Attempts to hit any enemies within the circle (Dont forgot ALL)
-        Collider2D[] enemiesHit = Physics2D.OverlapCircleAll(
-            attackPosition,
-            attack1Radius,
-            enemyLayer);
-
-        foreach (Collider2D enemy in enemiesHit)
+    private void FixedUpdate()
+    {
+        // Checks collision area while true, which becomes true when player clicks it
+        if (canAttack1)
         {
-            Health enemyHealth = enemy.GetComponent<Health>(); // Dmg, death, etc
-            EnemyMovement enemyMovement = enemy.GetComponent<EnemyMovement>(); // Knockbacks, etc
+            // Get current enemies in range
+            Collider2D[] currentEnemies = Physics2D.OverlapCircleAll(
+              CalculateAttackPosition(transform.position, attackDirection, ability1Offset),
+              attack1Radius,
+              enemyLayer);
 
-            // If enemy is a living entity, take damage
-            if (enemyHealth != null)
+            foreach (Collider2D enemy in currentEnemies)
             {
-                enemyHealth.TakeDamage(); // Enemy should take 10 health by default
-                //Debug.Log("Player hit {" + enemy.name + "} with attack 1. Enemy now has " + enemyHealth.currentHealth + " health.");
+                Debug.Log("target FOUND");
+                if (enemiesAlreadyHit.Add(enemy)) // If it does add en enemy, then dmg them
+                {
+                    ApplyAttack1Damage(enemy);
+                    Debug.Log("target DAMAGED");
+                } else
+                {
+                    Debug.Log("target duplicate");
+                }
             }
+        }
+    }
 
-            // If enemy can move, knock enemy back
-            if (enemyMovement != null)
-            {
-                enemyMovement.ApplyForce(attackDirection * attack1KnockBackStrength); // Apply knockback
-            }
+    private void ApplyAttack1Damage(Collider2D enemy)
+    {
+        Health enemyHealth = enemy.GetComponent<Health>(); // Dmg, death, etc
+        EnemyMovement enemyMovement = enemy.GetComponent<EnemyMovement>(); // Knockbacks, etc
+
+        // If enemy is a living entity, take damage
+        if (enemyHealth != null)
+        {
+            enemyHealth.TakeDamage(); // Enemy should take 10 health by default
+                                      //Debug.Log("Player hit {" + enemy.name + "} with attack 1. Enemy now has " + enemyHealth.currentHealth + " health.");
+        }
+
+        // If enemy can move, knock enemy back
+        if (enemyMovement != null)
+        {
+            enemyMovement.ApplyForce(attackDirection * attack1KnockBackStrength); // Apply knockback
         }
     }
 
     private void Attack1StartRecover()
     {
         // animation 
-        // end slow
+        // end attack scan
+        canAttack1 = false;
+        enemiesAlreadyHit.Clear();
+
         Debug.Log("Attack 1 RECOVER");
     }
 
     private void Attack1Finish()
     {
         // animation 
-        // end slow
         Debug.Log("Attack 1 FINISH");
     }
 
@@ -122,7 +142,7 @@ public class PlayerCombat : MonoBehaviour
         // Red circular outline to visulize attack 1
         Gizmos.color = new Color(0.75f, 0.0f, 0.0f, 0.75f);
         Gizmos.DrawWireSphere(
-            playerMovement.lastDirection + (Vector2)transform.position,
+            (playerMovement.lastDirection * ability1Offset) + (Vector2)transform.position,
             attack1Radius);
     }
 }
