@@ -17,11 +17,12 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private float attack1HitTimer = 0.10f;
     [SerializeField] private float attack1RecoverTimer = 0.25f;
     [SerializeField] private float attack1SpeedChange = -0.5f;
-    [SerializeField] private Vector2 attack1KnockBack = new Vector2(1,1);
+    [SerializeField] private float attack1KnockBackStrength = 2.0f;
     private float nextAttack1Time = 0.0f;
     private float totalAttackTime;
 
     Vector2 attackDirection;
+    Vector2 attackPosition;
 
     private void Awake()
     {
@@ -63,6 +64,7 @@ public class PlayerCombat : MonoBehaviour
         // Getting last position from PlayerMovement script
         playerMovement.ApplyTemporarySpeedModifier(attack1SpeedChange, totalAttackTime);
         attackDirection =  playerMovement.lastDirection.normalized;
+        attackPosition = CalculateAttackPosition(transform.position, attackDirection, ability1Offset);
     }
 
     private void Attack1Hit()
@@ -74,7 +76,7 @@ public class PlayerCombat : MonoBehaviour
 
         // Attempts to hit any enemies within the circle (Dont forgot ALL)
         Collider2D[] enemiesHit = Physics2D.OverlapCircleAll(
-            CalculateAttackPosition(transform.position, attackDirection, ability1Offset),
+            attackPosition,
             attack1Radius,
             enemyLayer);
 
@@ -83,15 +85,21 @@ public class PlayerCombat : MonoBehaviour
             Health enemyHealth = enemy.GetComponent<Health>(); // Dmg, death, etc
             EnemyMovement enemyMovement = enemy.GetComponent<EnemyMovement>(); // Knockbacks, etc
 
-            if (enemyHealth != null && enemyMovement != null)
+            // If enemy is a living entity, take damage
+            if (enemyHealth != null)
             {
                 enemyHealth.TakeDamage(); // Enemy should take 10 health by default
-                enemyMovement.ApplyForce(attack1KnockBack * attackDirection); // Apply knockback
+                //Debug.Log("Player hit {" + enemy.name + "} with attack 1. Enemy now has " + enemyHealth.currentHealth + " health.");
+            }
 
-                Debug.Log("Player hit {" + enemy.name + "} with attack 1. Enemy now has " + enemyHealth.currentHealth + " health.");
+            // If enemy can move, knock enemy back
+            if (enemyMovement != null)
+            {
+                enemyMovement.ApplyForce(attackDirection * attack1KnockBackStrength); // Apply knockback
             }
         }
     }
+
     private void Attack1StartRecover()
     {
         // animation 
@@ -114,7 +122,7 @@ public class PlayerCombat : MonoBehaviour
         // Red circular outline to visulize attack 1
         Gizmos.color = new Color(0.75f, 0.0f, 0.0f, 0.75f);
         Gizmos.DrawWireSphere(
-            CalculateAttackPosition(transform.position, attackDirection, ability1Offset),
+            playerMovement.lastDirection + (Vector2)transform.position,
             attack1Radius);
     }
 }

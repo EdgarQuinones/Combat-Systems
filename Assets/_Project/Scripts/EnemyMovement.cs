@@ -9,8 +9,8 @@ public class EnemyMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    public void ApplyForce(Vector2 force)
+    public void ApplyForce(Vector2 strength)
     {
-        rb.AddForce(force);
+        rb.AddForce(strength, ForceMode2D.Impulse);
     }
 }

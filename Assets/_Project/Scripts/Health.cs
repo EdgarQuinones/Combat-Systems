@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
+    [Header ("Health Options")]
     [SerializeField] private int startingHealth = 100;
     private int _currentHealth;
     public int currentHealth => _currentHealth; // read only current health
