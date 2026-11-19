@@ -2,10 +2,12 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(PlayerMovement))]
 public class PlayerCombat : MonoBehaviour
 {
     [Header ("Components")]
     [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] private GameManager gameManager;
 
     [Header ("Attack Settings")]
     [SerializeField] private LayerMask enemyLayer;
@@ -21,10 +23,12 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private float attack1RecoverTimer = 0.25f;
     [SerializeField] private float attack1SpeedChange = -0.5f;
     [SerializeField] private float attack1KnockBackStrength = 2.0f;
+    [SerializeField] private float attack1HitStopDuration = 0.08f;
     private HashSet<Collider2D> enemiesAlreadyHit = new(); 
     private bool canAttack1 = false;
     private float nextAttack1Time = 0.0f;
     private float totalAttackTime;
+
 
     private void Awake()
     {
@@ -107,6 +111,7 @@ public class PlayerCombat : MonoBehaviour
         // If enemy is a living entity, take damage
         if (enemyHealth != null)
         {
+            gameManager.FreezeTime(attack1HitStopDuration);
             enemyHealth.TakeDamage(); // Enemy should take 10 health by default
                                       //Debug.Log("Player hit {" + enemy.name + "} with attack 1. Enemy now has " + enemyHealth.currentHealth + " health.");
         }
