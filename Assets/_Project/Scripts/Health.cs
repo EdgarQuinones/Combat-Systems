@@ -36,6 +36,8 @@ public class Health : MonoBehaviour
         // Reset stats incase used later
         if (_currentHealth == 0)
         {
+            // TODO: Reset Stats method when a player/enemy dies
+
             flashEndTime = 0;
             isFlashing = false;
             sr.color = originalColor;

@@ -2,11 +2,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 
-[RequireComponent(typeof(Rigidbody2D))] // Rigibody2D is needed for movement to work
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : CharacterMovement
 {
     private Vector2 moveInput;
-    private Rigidbody2D rb;
     private Vector2 _lastDirection = Vector2.right;
     public Vector2 lastDirection => _lastDirection; // Read only for other scripts
 
@@ -15,9 +13,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float speed = 5.0f;
     private float currentSpeed;
 
-    private void Awake()
+    protected override void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        base.Awake(); // sets rb
         currentSpeed = speed;
     }
 
@@ -33,6 +31,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isFrozen)
+            return;
+
         // moveInput is already normalized for diagonal movement 
         rb.linearVelocity = moveInput * currentSpeed;
     }

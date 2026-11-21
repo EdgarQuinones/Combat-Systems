@@ -111,7 +111,7 @@ public class PlayerCombat : MonoBehaviour
         // If enemy is a living entity, take damage
         if (enemyHealth != null)
         {
-            gameManager.FreezeTime(attack1HitStopDuration);
+            // Both use same method as they have same parent
             enemyHealth.TakeDamage(); // Enemy should take 10 health by default
                                       //Debug.Log("Player hit {" + enemy.name + "} with attack 1. Enemy now has " + enemyHealth.currentHealth + " health.");
         }
@@ -120,6 +120,11 @@ public class PlayerCombat : MonoBehaviour
         if (enemyMovement != null)
         {
             enemyMovement.ApplyForce(attackDirection * attack1KnockBackStrength); // Apply knockback
+
+            // Need a method that dosent freeze entire game
+            //gameManager.FreezeTime(attack1HitStopDuration);
+            playerMovement.FreezeMovement(attack1HitStopDuration);
+            enemyMovement.FreezeMovement(attack1HitStopDuration);
         }
     }
 
