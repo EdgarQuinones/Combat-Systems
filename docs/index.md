@@ -13,7 +13,6 @@ Check out the source code at https://github.com/EdgarQuinones/Combat-Systems!
 
 ## Development Logs
 
-{% for post in site.posts %}
 ### [{{ post.title }}]({{ post.url | relative_url }})
 {{ post.excerpt }}
 {% endfor %}
