@@ -5,14 +5,12 @@ title: Home
 
 # Combat Systems Devlog
 
-Learning Combat Systens in Unity! I will be sharing what I learn here.
+Learning Combat Systems in Unity! I will be sharing what I learn here.
 
-My goals involve learning design behind combat mechanics and design them myself, then refactor and improve upon it using AI. 
+My goals involve learning the design behind combat mechanics, designing them myself, then refactoring and improving them using AI.
 
-Check out the source code at https://github.com/EdgarQuinones/Combat-Systems!
+Check out the [source code](https://github.com/EdgarQuinones/Combat-Systems)!
 
 ## Development Logs
 
-### [{{ post.title }}]({{ post.url | relative_url }})
-{{ post.excerpt }}
-{% endfor %}
+Visit the [Posts]({{ '/posts/' | relative_url }}) page to read my development logs.
