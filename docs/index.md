@@ -5,6 +5,8 @@ title: Home
 
 # Combat Systems Devlog
 
+[← Back to Main Portfolio](https://edgarquinones.github.io/)
+
 Learning Combat Systems in Unity! I will be sharing what I learn here.
 
 My goals involve learning the design behind combat mechanics, designing them myself, then refactoring and improving them using AI.
