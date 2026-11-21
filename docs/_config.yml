@@ -4,3 +4,7 @@ theme: minima
 
 url: "https://edgarquinones.github.io"
 baseurl: "/Combat-Systems"
+
+header_pages:
+  - index.md
+  - posts.md
