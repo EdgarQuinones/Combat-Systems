@@ -15,14 +15,14 @@ public class PlayerCombat : MonoBehaviour
     Vector2 attackDirection;
 
     [Header ("Attack 1")]
-    [SerializeField] private float ability1Offset = 1.0f;
+    [SerializeField] private float attack1Offset = 1.0f;
     [SerializeField] private float attack1Radius = 0.75f;
     [SerializeField] private float attack1Cooldown = 0f;
-    [SerializeField] private float attack1startUpTimer = 0.15f;
+    [SerializeField] private float attack1StartUpTimer = 0.15f;
     [SerializeField] private float attack1HitTimer = 0.10f;
     [SerializeField] private float attack1RecoverTimer = 0.25f;
-    [SerializeField] private float attack1SpeedChange = -0.5f;
-    [SerializeField] private float attack1KnockBackStrength = 2.0f;
+    [SerializeField] private float attack1SpeedModifier = -0.5f;
+    [SerializeField] private float attack1Knockback = 2.0f;
     [SerializeField] private float attack1HitStopDuration = 0.08f;
     private HashSet<Collider2D> enemiesAlreadyHit = new(); 
     private bool canAttack1 = false;
@@ -32,7 +32,7 @@ public class PlayerCombat : MonoBehaviour
 
     private void Awake()
     {
-        totalAttackTime = attack1startUpTimer + attack1HitTimer + attack1RecoverTimer;
+        totalAttackTime = attack1StartUpTimer + attack1HitTimer + attack1RecoverTimer;
     }
 
     public void OnAttack1(InputAction.CallbackContext context)
@@ -48,9 +48,9 @@ public class PlayerCombat : MonoBehaviour
 
         Attack1StartUp();  // animation and begin slow
 
-        Invoke(nameof(Attack1Hit), attack1startUpTimer); // read all colliders and damage
+        Invoke(nameof(Attack1Hit), attack1StartUpTimer); // read all colliders and damage
 
-        Invoke(nameof(Attack1StartRecover), attack1startUpTimer + attack1HitTimer); // animation, still slowed, and cooldown hasnt started yet
+        Invoke(nameof(Attack1StartRecover), attack1StartUpTimer + attack1HitTimer); // animation, still slowed, and cooldown hasnt started yet
 
         Invoke(nameof(Attack1Finish), totalAttackTime);
     }
@@ -68,7 +68,7 @@ public class PlayerCombat : MonoBehaviour
         Debug.Log("Attack 1 STARTUP");
 
         // Getting last position from PlayerMovement script
-        playerMovement.ApplyTemporarySpeedModifier(attack1SpeedChange, totalAttackTime);
+        playerMovement.ApplyTemporarySpeedModifier(attack1SpeedModifier, totalAttackTime);
         attackDirection =  playerMovement.lastDirection.normalized;
     }
 
@@ -84,7 +84,7 @@ public class PlayerCombat : MonoBehaviour
         {
             // Get current enemies in range
             Collider2D[] currentEnemies = Physics2D.OverlapCircleAll(
-              CalculateAttackPosition(transform.position, attackDirection, ability1Offset),
+              CalculateAttackPosition(transform.position, attackDirection, attack1Offset),
               attack1Radius,
               enemyLayer);
 
@@ -111,7 +111,6 @@ public class PlayerCombat : MonoBehaviour
         // If enemy is a living entity, take damage
         if (enemyHealth != null)
         {
-            // Both use same method as they have same parent
             enemyHealth.TakeDamage(); // Enemy should take 10 health by default
                                       //Debug.Log("Player hit {" + enemy.name + "} with attack 1. Enemy now has " + enemyHealth.currentHealth + " health.");
         }
@@ -119,10 +118,9 @@ public class PlayerCombat : MonoBehaviour
         // If enemy can move, knock enemy back
         if (enemyMovement != null)
         {
-            enemyMovement.ApplyForce(attackDirection * attack1KnockBackStrength); // Apply knockback
+            enemyMovement.ApplyForce(attackDirection * attack1Knockback); // Apply knockback
 
-            // Need a method that dosent freeze entire game
-            //gameManager.FreezeTime(attack1HitStopDuration);
+            // Both use same method as they have same parent
             playerMovement.FreezeMovement(attack1HitStopDuration);
             enemyMovement.FreezeMovement(attack1HitStopDuration);
         }
@@ -152,7 +150,7 @@ public class PlayerCombat : MonoBehaviour
         // Red circular outline to visulize attack 1
         Gizmos.color = new Color(0.75f, 0.0f, 0.0f, 0.75f);
         Gizmos.DrawWireSphere(
-            (playerMovement.lastDirection * ability1Offset) + (Vector2)transform.position,
+            (playerMovement.lastDirection * attack1Offset) + (Vector2)transform.position,
             attack1Radius);
     }
 }

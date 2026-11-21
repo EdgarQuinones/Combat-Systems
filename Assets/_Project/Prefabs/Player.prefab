@@ -315,6 +315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
   playerMovement: {fileID: 210740566804437903}
+  gameManager: {fileID: 0}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -325,3 +326,5 @@ MonoBehaviour:
   attack1HitTimer: 0.1
   attack1RecoverTimer: 0.25
   attack1SpeedChange: -0.5
+  attack1KnockBackStrength: 5
+  attack1HitStopDuration: 0.08
