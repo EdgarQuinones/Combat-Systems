@@ -2,24 +2,25 @@
 layout: post
 title: "Devlog #1 - First DevLog"
 date: 2026-11-21
+excerpt: "My first DevLog and everything I've worked on so far"
 ---
 
 ## My First DevLog
 
-This is my first official devlog discussing my thoughts, process, and things I learned while working on combat systems. I wanted to start this so I can track my progress and reflect more on my programming practices. 
+This is my first official devlog discussing my thoughts, process, and things I've learned while working on combat systems. I wanted to start this so I could track my progress and reflect more on my programming practices.
 
-## Everything so far
+## Everything So Far
 
-This is my first time diving into the intriclcies of combat systems. I am a big fan of **Hack and slash** and **Beat 'Em Up** games, so this will be an exciting learning experience. 
+This is my first time diving into the intricacies of combat systems. I am a big fan of **hack-and-slash** and **beat 'em up** games, so this will be an exciting learning experience.
 
-So far, I have a player who can move, attack enemies, and an enemy that can be pushed, hurt, and defeated by the player. 
+So far, I have a player who can move and attack enemies, and an enemy that can be pushed, hurt, and defeated by the player.
 
-The player has one attack ability that contains some modifiers, some of those traits include damage, knockback strength, and some timers. One of the aspects of combat I wanted to learn was state changes, so the attack has a initial setup state, the actual hit state with a *hitstop* included, and a recover state. During all these states the player is slowed. My goal is not only to make a attack the player sees, but can really feel. 
+The player has one attack ability that contains several modifiers, including damage, knockback strength, and timers. One of the aspects of combat I wanted to learn was state changes, so the attack has an initial setup state, the actual hit state with *hitstop* included, and a recovery state. During all these states, the player is slowed. My goal is not only to make an attack the player sees, but one they can really feel.
 
-The enemy currently is just a test dummy with a **RigidBody2D** and `Health.cs` script that the player can interact with. Their knockback is based on their mass and they will deactivate when their **health** reaches 0. At a future point I want the enemy to have an AI and combat of their own, which their own attack states and complexities.
+The enemy currently is just a test dummy with a **Rigidbody2D** and a `Health.cs` script that the player can interact with. Its knockback is based on its mass, and it will deactivate when its **health** reaches 0. In the future, I want the enemy to have its own AI and combat system, with its own attack states and complexities.
 
 ## What's Next?
 
-Nexts steps involves tuning the player so the hitstop does not interfere with the attack states timing. Currently when a player hits an enemy, both the player and enemies' velocity is saved and set to zero for 0.08 seconds. The problem with this is the full attack timer at this time is about 0.5s, so technically the player is waiting longer than 0.5s (Plus the 1s CD) for their next attack.
+Next steps involve tuning the player so that hitstop does not interfere with the attack state timings. Currently, when a player hits an enemy, both the player's and enemy's velocities are saved and set to zero for 0.08 seconds. The problem is that the full attack timer is currently about 0.5 seconds, so technically, the player is waiting longer than 0.5 seconds (plus the 1-second cooldown) before their next attack.
 
-Thank you and I look forward to sharing more updates!
+Thank you, and I look forward to sharing more updates!
