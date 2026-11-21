@@ -5,11 +5,10 @@ title: Home
 
 # Combat Systems Devlog
 
-Welcome to my development blog!
+Learning Combat Systens in Unity! I will be sharing what I learn here.
 
-I'm learning combat programming and game design
-in Unity, documenting my experiments, challenges,
-and improvements along the way.
+My goals involve learning design behind combat mechanics and design them myself, then refactor and improve upon it using AI. 
+
 
 ## Development Logs
 
